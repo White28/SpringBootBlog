@@ -19,7 +19,7 @@ public class Post {
 	private String title;
 	private String body;
 	private Date dateOfPublishing;
-	private ObjectId authorId;
+	private ObjectId userId;
 	private Set<ObjectId> setOfLikes;
 	private List<String> tags;
 	private List<ObjectId> listOfComments;
@@ -32,7 +32,7 @@ public class Post {
 		this.title = title;
 		this.body = body;
 		this.dateOfPublishing = dateOfPublishing;
-		this.authorId = authorId;
+		this.userId = authorId;
 		this.setOfLikes = setOfLikes;
 	}
 
@@ -42,7 +42,7 @@ public class Post {
 		this.title = title;
 		this.body = body;
 		this.dateOfPublishing = dateOfPublishing;
-		this.authorId = authorId;
+		this.userId = authorId;
 		this.setOfLikes = setOfLikes;
 		this.tags = tags;
 	}
@@ -80,11 +80,11 @@ public class Post {
 	}
 
 	public ObjectId getAuthorId() {
-		return authorId;
+		return userId;
 	}
 
 	public void setAuthorId(ObjectId authorId) {
-		this.authorId = authorId;
+		this.userId = authorId;
 	}
 
 	public Set<ObjectId> getSetOfLikes() {
@@ -110,5 +110,4 @@ public class Post {
 	public void setListOfComments(List<ObjectId> listOfComments) {
 		this.listOfComments = listOfComments;
 	}
-
 }
