@@ -6,12 +6,15 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author Alexander Torchynskyi
  * @data Nov 22, 2017
  *       <p>
+ *       Class that represent collection of posts;
  */
+@Document(collection = "post")
 public class Post {
 
 	@Id
@@ -28,7 +31,6 @@ public class Post {
 	}
 
 	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId, Set<ObjectId> setOfLikes) {
-		super();
 		this.title = title;
 		this.body = body;
 		this.dateOfPublishing = dateOfPublishing;
@@ -38,7 +40,6 @@ public class Post {
 
 	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId, Set<ObjectId> setOfLikes,
 			List<String> tags) {
-		super();
 		this.title = title;
 		this.body = body;
 		this.dateOfPublishing = dateOfPublishing;
