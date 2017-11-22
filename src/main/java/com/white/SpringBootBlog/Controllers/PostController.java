@@ -72,7 +72,8 @@ public class PostController {
 		postRepository.save(post);
 	}
 
-	public Set<User> getAllUsersWhoLikedPost(@RequestBody Post post) {
-		return userRepository.getAllUsers(post.getSetOfLikes());
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
+	public Set<User> getAllUsersWhoLikedPost(@PathVariable(value = "id") ObjectId id) {
+		return userRepository.getAllUsers(postRepository.findOne(id).getSetOfLikes());
 	}
 }
