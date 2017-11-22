@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Alexander Torchynskyi
  * @data Nov 22, 2017
  *       <p>
+ *       Class that represent collection of users, each post and comment have an
+ *       author (user model);
  */
 @Document(collection = "user")
 public class User {
@@ -21,7 +23,6 @@ public class User {
 	}
 
 	public User(String firstName, String lastName) {
-
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}

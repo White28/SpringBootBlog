@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Alexander Torchynskyi
  * @data Nov 22, 2017
  *       <p>
+ *       Class that represent collection comment, each post might have list of
+ *       them;
  */
 @Document(collection = "comment")
 public class Comment {
@@ -70,5 +72,4 @@ public class Comment {
 	public void setSetOfLikes(Set<ObjectId> setOfLikes) {
 		this.setOfLikes = setOfLikes;
 	}
-
 }
