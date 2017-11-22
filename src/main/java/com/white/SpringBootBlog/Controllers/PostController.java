@@ -1,6 +1,7 @@
 package com.white.SpringBootBlog.Controllers;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.white.SpringBootBlog.Models.Post;
+import com.white.SpringBootBlog.Models.User;
 import com.white.SpringBootBlog.Repositories.IPostRepository;
+import com.white.SpringBootBlog.Repositories.IUserRepository;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi
@@ -26,6 +29,9 @@ import com.white.SpringBootBlog.Repositories.IPostRepository;
 public class PostController {
 	@Autowired
 	private IPostRepository postRepository;
+
+	@Autowired
+	private IUserRepository userRepository;
 
 	private final String DEFAULT_PAGE = "0";
 	private final String DEFAULT_SIZE = "5";
@@ -64,5 +70,9 @@ public class PostController {
 	@RequestMapping(method = RequestMethod.PUT)
 	public void update(@RequestBody Post post) {
 		postRepository.save(post);
+	}
+
+	public Set<User> getAllUsersWhoLikedPost(@RequestBody Post post) {
+		return userRepository.getAllUsers(post.getSetOfLikes());
 	}
 }
