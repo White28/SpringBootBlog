@@ -30,21 +30,18 @@ public class Post {
 	public Post() {
 	}
 
-	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId, Set<ObjectId> setOfLikes) {
+	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId) {
 		this.title = title;
 		this.body = body;
 		this.dateOfPublishing = dateOfPublishing;
 		this.userId = authorId;
-		this.setOfLikes = setOfLikes;
 	}
 
-	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId, Set<ObjectId> setOfLikes,
-			List<String> tags) {
+	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId, List<String> tags) {
 		this.title = title;
 		this.body = body;
 		this.dateOfPublishing = dateOfPublishing;
 		this.userId = authorId;
-		this.setOfLikes = setOfLikes;
 		this.tags = tags;
 	}
 

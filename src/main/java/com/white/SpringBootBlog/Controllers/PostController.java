@@ -65,5 +65,4 @@ public class PostController {
 	public void update(@RequestBody Post post) {
 		postRepository.save(post);
 	}
-
 }
