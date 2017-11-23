@@ -55,7 +55,7 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
 @WebAppConfiguration
 public class CommentControllerTest {
 	private static final String URL_POST = "/post/";
-	private static final Date dateOfCommentPublishing = new Date();;
+	private static final Date DATE_OF_PUBLISHING = new Date();
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
@@ -69,8 +69,6 @@ public class CommentControllerTest {
 	private Comment comment;
 
 	private List<User> listOfUsers;
-
-	private List<Comment> listOfComments;
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -99,19 +97,15 @@ public class CommentControllerTest {
 		commentRepository.deleteAll();
 
 		listOfUsers = new ArrayList<>();
-		listOfComments = new ArrayList<>();
 
 		listOfUsers.add(userRepository.save(new User("Alex", "Tor")));
 		listOfUsers.add(userRepository.save(new User("Dimka", "Bilyi")));
 
 		this.post = postRepository
-				.save(new Post("someTitle", "someBody", dateOfCommentPublishing, listOfUsers.get(0).getId()));
+				.save(new Post("someTitle", "someBody", DATE_OF_PUBLISHING, listOfUsers.get(0).getId()));
 
-		listOfComments.add(commentRepository
-				.save(new Comment(listOfUsers.get(0).getId(), "The body for comment", dateOfCommentPublishing)));
-		listOfComments.add(commentRepository
-				.save(new Comment(listOfUsers.get(1).getId(), "The body for comment", dateOfCommentPublishing)));
-
+		this.comment = commentRepository
+				.save(new Comment(listOfUsers.get(0).getId(), "The body for comment", DATE_OF_PUBLISHING));
 	}
 
 	/**
@@ -121,9 +115,9 @@ public class CommentControllerTest {
 	 */
 	@Test
 	public void testReadSingleCommentSuccess() throws Exception {
-		mockMvc.perform(get(URL_POST + this.post.getId() + "/" + listOfComments.get(0).getId()))
-				.andExpect(status().isOk()).andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$.commentText", is(this.listOfComments.get(0).getCommentText())));
+		mockMvc.perform(get(URL_POST + this.post.getId() + "/" + comment.getId())).andExpect(status().isOk())
+				.andExpect(content().contentType(contentType))
+				.andExpect(jsonPath("$.commentText", is(this.comment.getCommentText())));
 	}
 
 	/**
@@ -134,11 +128,9 @@ public class CommentControllerTest {
 	 */
 	@Test
 	public void testDeleteCommentSuccess() throws Exception {
-		mockMvc.perform(get(URL_POST + this.post.getId() + "/" + listOfComments.get(0).getId()))
-				.andExpect(status().isOk());
-		mockMvc.perform(delete(URL_POST + this.post.getId() + "/" + listOfComments.get(0).getId()))
-				.andExpect(status().isOk());
-		assertEquals(commentRepository.findOne(listOfComments.get(0).getId()), null);
+		mockMvc.perform(get(URL_POST + this.post.getId() + "/" + comment.getId())).andExpect(status().isOk());
+		mockMvc.perform(delete(URL_POST + this.post.getId() + "/" + comment.getId())).andExpect(status().isOk());
+		assertEquals(commentRepository.findOne(comment.getId()), null);
 	}
 
 	/**
@@ -152,7 +144,6 @@ public class CommentControllerTest {
 	 */
 	@Test
 	public void testCreateAndUpdateCommentSuccess() throws Exception {
-		this.comment = new Comment(listOfUsers.get(0).getId(), "The body for comment", dateOfCommentPublishing);
 		comment.setId(new ObjectId());
 
 		String commentsJson = json(comment);
@@ -178,16 +169,15 @@ public class CommentControllerTest {
 	 */
 	@Test
 	public void testGetAllUsersWhoLikedCommentSuccess() throws Exception {
-
 		Set<ObjectId> setOfUsersWhoLikedComment = new LinkedHashSet<>();
 		setOfUsersWhoLikedComment.add(listOfUsers.get(0).getId());
 		setOfUsersWhoLikedComment.add(listOfUsers.get(1).getId());
 
-		this.listOfComments.get(0).setSetOfLikes(setOfUsersWhoLikedComment);
-		commentRepository.save(this.listOfComments.get(0));
+		this.comment.setSetOfLikes(setOfUsersWhoLikedComment);
+		commentRepository.save(this.comment);
 
-		mockMvc.perform(get("/post/" + this.post.getId() + "/" + listOfComments.get(0).getId() + "/likes"))
-				.andExpect(status().isOk()).andExpect(content().contentType(contentType))
+		mockMvc.perform(get("/post/" + this.post.getId() + "/" + comment.getId() + "/likes")).andExpect(status().isOk())
+				.andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$[0].firstName", is(listOfUsers.get(0).getFirstName())))
 				.andExpect(jsonPath("$[0].lastName", is(listOfUsers.get(0).getLastName())))
 				.andExpect(jsonPath("$[1].firstName", is(listOfUsers.get(1).getFirstName())))

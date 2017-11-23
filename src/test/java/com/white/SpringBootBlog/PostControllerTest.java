@@ -57,7 +57,7 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
 public class PostControllerTest {
 
 	private static final String URL_POST = "/post";
-	private static final Date dateOfCommentPublishing = new Date();
+	private static final Date DATE_OF_PUBLISHING = new Date();
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
@@ -68,7 +68,9 @@ public class PostControllerTest {
 
 	private Post post;
 
-	private User user;
+	private User user1;
+
+	private User user2;
 
 	private List<Post> postList;
 
@@ -103,11 +105,14 @@ public class PostControllerTest {
 
 		this.postRepository.deleteAll();
 
-		user = userRepository.save(new User("alex", "tor"));
+		this.user1 = userRepository.save(new User("alex", "tor"));
+		this.user2 = userRepository.save(new User("dima", "white"));
 
-		this.postList.add(postRepository.save(new Post("someTitle", "someBody", new Date(), user.getId())));
+		this.post = new Post("someTitle", "someBody", new Date(), user1.getId());
+		this.post.setId(new ObjectId());
 
-		this.postList.add(postRepository.save(new Post("NewTitle", "NewBody", new Date(), user.getId())));
+		this.postList.add(postRepository.save(new Post("someTitle", "someBody", new Date(), user1.getId())));
+		this.postList.add(postRepository.save(new Post("NewTitle", "NewBody", new Date(), user1.getId())));
 
 	}
 
@@ -119,11 +124,10 @@ public class PostControllerTest {
 	@Test
 	public void testReadSinglePostSuccess() throws Exception {
 
-		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk())
-				.andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$.title", is(this.postList.get(0).getTitle())))
-				.andExpect(jsonPath("$.body", is(this.postList.get(0).getBody())))
-				.andExpect(jsonPath("$.tags", is(this.postList.get(0).getTags())));
+		mockMvc.perform(get(URL_POST + "/" + this.post.getId())).andExpect(status().isOk())
+				.andExpect(content().contentType(contentType)).andExpect(jsonPath("$.title", is(this.post.getTitle())))
+				.andExpect(jsonPath("$.body", is(this.post.getBody())))
+				.andExpect(jsonPath("$.tags", is(this.post.getTags())));
 	}
 
 	/**
@@ -150,9 +154,9 @@ public class PostControllerTest {
 	 */
 	@Test
 	public void testDeletePostSuccess() throws Exception {
-		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
-		mockMvc.perform(delete(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
-		assertEquals(postRepository.findOne(postList.get(0).getId()), null);
+		mockMvc.perform(get(URL_POST + "/" + this.post.getId())).andExpect(status().isOk());
+		mockMvc.perform(delete(URL_POST + "/" + this.post.getId())).andExpect(status().isOk());
+		assertEquals(postRepository.findOne(post.getId()), null);
 	}
 
 	/**
@@ -166,8 +170,6 @@ public class PostControllerTest {
 	 */
 	@Test
 	public void testCreateAndUpdatePostSuccess() throws Exception {
-		this.post = new Post("MyTitlke", "someBody", new Date(), user.getId());
-		post.setId(new ObjectId());
 		String postJson = json(post);
 		this.mockMvc.perform(post(URL_POST).contentType(MediaType.APPLICATION_JSON).content(postJson))
 				.andExpect(status().isOk());
@@ -187,15 +189,10 @@ public class PostControllerTest {
 	 */
 	@Test
 	public void testGetAllUsersWhoLikedPostSuccess() throws Exception {
-
-		User user1 = userRepository.save(new User("alex", "tor"));
-		User user2 = userRepository.save(new User("dima", "white"));
-
 		Set<ObjectId> setOfUsersWhoLikedPost = new LinkedHashSet<>();
 		setOfUsersWhoLikedPost.add(user1.getId());
 		setOfUsersWhoLikedPost.add(user2.getId());
 
-		this.post = new Post("someTitle", "someBody", new Date(), user.getId());
 		this.post.setSetOfLikes(setOfUsersWhoLikedPost);
 		postRepository.save(this.post);
 
@@ -208,30 +205,25 @@ public class PostControllerTest {
 	}
 
 	/**
-	 * In this test was created a collection of user's ids who liked post, then it
-	 * saves that collection into Post model "post" and saves "post" into db. Then
-	 * it gets back all users who liked the comment, and checks the fields of users;
+	 * In that test we create and save two users then we added two comments by them
+	 * and attached it to the "post" and save it with that changes. After that it
+	 * creates ids collection of comments for the "post". Finally it checks if the
+	 * "post" has comments which we added before;
 	 * 
 	 * @throws Exception
 	 */
 	@Test
 	public void testGetAllCommentsUnderPostSuccess() throws Exception {
-
-		User user1 = userRepository.save(new User("alex", "tor"));
-		User user2 = userRepository.save(new User("dima", "white"));
-
 		listOfComments = new ArrayList<>();
-
-		listOfComments.add(commentRepository
-				.save(new Comment(user1.getId(), "The body for comment11111", dateOfCommentPublishing)));
-		listOfComments.add(commentRepository
-				.save(new Comment(user2.getId(), "The body for comment22222", dateOfCommentPublishing)));
+		listOfComments.add(
+				commentRepository.save(new Comment(user1.getId(), "The body for comment11111", DATE_OF_PUBLISHING)));
+		listOfComments.add(
+				commentRepository.save(new Comment(user2.getId(), "The body for comment22222", DATE_OF_PUBLISHING)));
 
 		List<ObjectId> listOfCommentsUnderPost = new ArrayList<>();
 		listOfCommentsUnderPost.add(listOfComments.get(0).getId());
 		listOfCommentsUnderPost.add(listOfComments.get(1).getId());
 
-		this.post = new Post("someTitle", "someBody", new Date(), user.getId());
 		this.post.setListOfComments(listOfCommentsUnderPost);
 		postRepository.save(this.post);
 

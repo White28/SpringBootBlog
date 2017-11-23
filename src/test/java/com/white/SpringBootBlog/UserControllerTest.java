@@ -1,6 +1,5 @@
 package com.white.SpringBootBlog;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -48,6 +47,9 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
 @SpringBootTest
 @WebAppConfiguration
 public class UserControllerTest {
+
+	private static final String URL_USER = "/user";
+
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
@@ -56,8 +58,6 @@ public class UserControllerTest {
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
 	private User user;
-
-	private List<User> userList;
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -77,14 +77,8 @@ public class UserControllerTest {
 	@Before
 	public void setup() throws Exception {
 		this.mockMvc = webAppContextSetup(webApplicationContext).build();
-
-		userList = new ArrayList<>();
-
 		this.userRepository.deleteAll();
-
-		this.userList.add(userRepository.save(new User("FirstName1", "LastName1")));
-
-		this.userList.add(userRepository.save(new User("FirstName2", "LastName2")));
+		this.user = userRepository.save(new User("FirstName123", "LastName123"));
 	}
 
 	/**
@@ -94,10 +88,10 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void testReadSingleUserSuccess() throws Exception {
-		mockMvc.perform(get("/user/" + this.userList.get(0).getId())).andExpect(status().isOk())
+		mockMvc.perform(get(URL_USER + "/" + this.user.getId())).andExpect(status().isOk())
 				.andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$.firstName", is(this.userList.get(0).getFirstName())))
-				.andExpect(jsonPath("$.lastName", is(this.userList.get(0).getLastName())));
+				.andExpect(jsonPath("$.firstName", is(this.user.getFirstName())))
+				.andExpect(jsonPath("$.lastName", is(this.user.getLastName())));
 	}
 
 	/**
@@ -108,9 +102,9 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void testDeleteUserSuccess() throws Exception {
-		mockMvc.perform(get("/user/" + this.userList.get(0).getId())).andExpect(status().isOk());
-		mockMvc.perform(delete("/user/" + this.userList.get(0).getId())).andExpect(status().isOk());
-		assertEquals(userRepository.findOne(userList.get(0).getId()), null);
+		mockMvc.perform(get(URL_USER + "/" + this.user.getId())).andExpect(status().isOk());
+		mockMvc.perform(delete(URL_USER + "/" + this.user.getId())).andExpect(status().isOk());
+		assertEquals(userRepository.findOne(user.getId()), null);
 	}
 
 	/**
@@ -124,14 +118,13 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void testCreateAndUpdateUserSuccess() throws Exception {
-		this.user = new User("FirstName123", "LastName123");
 		user.setId(new ObjectId());
 		String postJson = json(user);
-		this.mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(postJson))
+		this.mockMvc.perform(post(URL_USER).contentType(MediaType.APPLICATION_JSON).content(postJson))
 				.andExpect(status().isOk());
 		user.setFirstName("AnotherFirstName");
 
-		mockMvc.perform(put("/user").contentType(MediaType.APPLICATION_JSON).content(json(user)))
+		mockMvc.perform(put(URL_USER).contentType(MediaType.APPLICATION_JSON).content(json(user)))
 				.andExpect(status().isOk());
 		assertEquals(user.getFirstName(), userRepository.findOne(user.getId()).getFirstName());
 	}
