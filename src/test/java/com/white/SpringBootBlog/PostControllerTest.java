@@ -18,7 +18,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -40,17 +42,17 @@ import com.white.SpringBootBlog.Models.User;
 import com.white.SpringBootBlog.Repositories.IPostRepository;
 import com.white.SpringBootBlog.Repositories.IUserRepository;
 
-
-
 /**
- * @author  Alexander Torchynskyi, Dima Bilyi
+ * @author Alexander Torchynskyi, Dima Bilyi
  * @data Nov 22, 2017
- * <p>
+ *       <p>
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
 public class PostControllerTest {
+
+	private static final String URL_POST = "/post";
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
@@ -64,7 +66,7 @@ public class PostControllerTest {
 	private User user;
 
 	private List<Post> postList;
-	
+
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -100,9 +102,31 @@ public class PostControllerTest {
 	}
 
 	@Test
+	public void getAllUsersWhoLikedPostSuccess() throws Exception {
+
+		User user1 = userRepository.save(new User("alex", "tor"));
+		User user2 = userRepository.save(new User("dima", "white"));
+
+		Set<ObjectId> setOfUsersWhoLikedPost = new LinkedHashSet<>();
+		setOfUsersWhoLikedPost.add(user1.getId());
+		setOfUsersWhoLikedPost.add(user2.getId());
+
+		this.post = new Post("someTitle", "someBody", new Date(), user.getId());
+		this.post.setSetOfLikes(setOfUsersWhoLikedPost);
+		postRepository.save(this.post);
+
+		mockMvc.perform(get("/post/" + this.post.getId() + "/likes")).andExpect(status().isOk())
+				.andExpect(content().contentType(contentType))
+				.andExpect(jsonPath("$[0].firstName", is(user1.getFirstName())))
+				.andExpect(jsonPath("$[0].lastName", is(user1.getLastName())))
+				.andExpect(jsonPath("$[1].firstName", is(user2.getFirstName())))
+				.andExpect(jsonPath("$[1].lastName", is(user2.getLastName())));
+	}
+
+	@Test
 	public void readSinglePostSuccess() throws Exception {
 
-		mockMvc.perform(get("/post/" + this.postList.get(0).getId())).andExpect(status().isOk())
+		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk())
 				.andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$.title", is(this.postList.get(0).getTitle())))
 				.andExpect(jsonPath("$.body", is(this.postList.get(0).getBody())))
@@ -112,7 +136,7 @@ public class PostControllerTest {
 	@Test
 	public void readAllPostsSuccess() throws Exception {
 
-		mockMvc.perform(get("/post")).andExpect(status().isOk()).andExpect(content().contentType(contentType))
+		mockMvc.perform(get(URL_POST)).andExpect(status().isOk()).andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(jsonPath("$[0].title", is(this.postList.get(0).getTitle())))
 				.andExpect(jsonPath("$[0].body", is(this.postList.get(0).getBody())))
@@ -122,8 +146,8 @@ public class PostControllerTest {
 
 	@Test
 	public void deletePostSuccess() throws Exception {
-		mockMvc.perform(get("/post/" + this.postList.get(0).getId())).andExpect(status().isOk());
-		mockMvc.perform(delete("/post/" + this.postList.get(0).getId())).andExpect(status().isOk());
+		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
+		mockMvc.perform(delete(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
 		assertEquals(postRepository.findOne(postList.get(0).getId()), null);
 	}
 
@@ -132,13 +156,11 @@ public class PostControllerTest {
 		this.post = new Post("MyTitlke", "someBody", new Date(), user.getId());
 		post.setId(new ObjectId());
 		String postJson = json(post);
-		this.mockMvc
-				.perform(
-						post("/post").contentType(MediaType.APPLICATION_JSON).content(postJson))
+		this.mockMvc.perform(post(URL_POST).contentType(MediaType.APPLICATION_JSON).content(postJson))
 				.andExpect(status().isOk());
 		post.setBody("anyBody");
 
-		mockMvc.perform(put("/post").contentType(MediaType.APPLICATION_JSON).content(json(post)))
+		mockMvc.perform(put(URL_POST).contentType(MediaType.APPLICATION_JSON).content(json(post)))
 				.andExpect(status().isOk());
 		assertEquals(post.getBody(), postRepository.findOne(post.getId()).getBody());
 	}

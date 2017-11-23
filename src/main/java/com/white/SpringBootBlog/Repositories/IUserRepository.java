@@ -1,6 +1,6 @@
 package com.white.SpringBootBlog.Repositories;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,13 +18,8 @@ import com.white.SpringBootBlog.Models.User;
  */
 public interface IUserRepository extends MongoRepository<User, ObjectId> {
 
-	default List<User> findAll(int page, int size) {
-		Page<User> records = this.findAll(new PageRequest(page, size));
-		return records.getContent();
-	}
-	
 	default Set<User> getAllUsers(Set<ObjectId> setOfUserId) {
-		Set<User> setOfUsers = new HashSet<>();
+		Set<User> setOfUsers = new LinkedHashSet<>();
 
 		for (ObjectId id : setOfUserId) {
 			setOfUsers.add(this.findOne(id));

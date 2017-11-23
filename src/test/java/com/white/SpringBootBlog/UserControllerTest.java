@@ -97,16 +97,6 @@ public class UserControllerTest {
 	}
 
 	@Test
-	public void readAllUsersSuccess() throws Exception {
-		mockMvc.perform(get("/user")).andExpect(status().isOk()).andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].firstName", is(this.userList.get(0).getFirstName())))
-				.andExpect(jsonPath("$[0].lastName", is(this.userList.get(0).getLastName())))
-				.andExpect(jsonPath("$[1].firstName", is(this.userList.get(1).getFirstName())))
-				.andExpect(jsonPath("$[1].lastName", is(this.userList.get(1).getLastName())));
-	}
-
-	@Test
 	public void deleteUserSuccess() throws Exception {
 		mockMvc.perform(get("/user/" + this.userList.get(0).getId())).andExpect(status().isOk());
 		mockMvc.perform(delete("/user/" + this.userList.get(0).getId())).andExpect(status().isOk());
