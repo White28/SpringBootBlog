@@ -51,7 +51,6 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
  *       Class that contains tests for PostController;
  * 
  */
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
@@ -159,8 +158,8 @@ public class PostControllerTest {
 	/**
 	 * That test creates a new object of post model, then converts it into json
 	 * format. After it insert the post into db through create method of
-	 * PostController. Then it changes on of the fields and call method update
-	 * of the same controller. Last thing it checks if the field was updated in
+	 * PostController. Then it changes on of the fields and call method update of
+	 * the same controller. Last thing it checks if the field was updated in
 	 * database;
 	 *
 	 * @throws Exception
@@ -180,10 +179,9 @@ public class PostControllerTest {
 	}
 
 	/**
-	 * In this test was created a collection of user's ids who liked post, then
-	 * it saves that collection into Post model "post" and saves "post" into db.
-	 * Then it gets back all users who liked the comment, and checks the fields
-	 * of users;
+	 * In this test was created a collection of user's ids who liked post, then it
+	 * saves that collection into Post model "post" and saves "post" into db. Then
+	 * it gets back all users who liked the comment, and checks the fields of users;
 	 * 
 	 * @throws Exception
 	 */
@@ -210,10 +208,9 @@ public class PostControllerTest {
 	}
 
 	/**
-	 * In this test was created a collection of user's ids who liked post, then
-	 * it saves that collection into Post model "post" and saves "post" into db.
-	 * Then it gets back all users who liked the comment, and checks the fields
-	 * of users;
+	 * In this test was created a collection of user's ids who liked post, then it
+	 * saves that collection into Post model "post" and saves "post" into db. Then
+	 * it gets back all users who liked the comment, and checks the fields of users;
 	 * 
 	 * @throws Exception
 	 */
@@ -225,10 +222,10 @@ public class PostControllerTest {
 
 		listOfComments = new ArrayList<>();
 
-		listOfComments.add(
-				commentRepository.save(new Comment(user1.getId(), "The body for comment11111", dateOfCommentPublishing)));
-		listOfComments.add(
-				commentRepository.save(new Comment(user2.getId(), "The body for comment22222", dateOfCommentPublishing)));
+		listOfComments.add(commentRepository
+				.save(new Comment(user1.getId(), "The body for comment11111", dateOfCommentPublishing)));
+		listOfComments.add(commentRepository
+				.save(new Comment(user2.getId(), "The body for comment22222", dateOfCommentPublishing)));
 
 		List<ObjectId> listOfCommentsUnderPost = new ArrayList<>();
 		listOfCommentsUnderPost.add(listOfComments.get(0).getId());
@@ -247,8 +244,7 @@ public class PostControllerTest {
 	/**
 	 * 
 	 * @param o
-	 *            - is an instance of class that should be converted to json
-	 *            format;
+	 *            - is an instance of class that should be converted to json format;
 	 * @return the String that looks like json of current object;
 	 * @throws IOException
 	 */
@@ -257,5 +253,4 @@ public class PostControllerTest {
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 		return mockHttpOutputMessage.getBodyAsString();
 	}
-
 }

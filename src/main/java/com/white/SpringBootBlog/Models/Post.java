@@ -115,5 +115,4 @@ public class Post {
 				+ ", userId=" + userId + ", setOfLikes=" + setOfLikes + ", tags=" + tags + ", listOfComments="
 				+ listOfComments + "]";
 	}
-	
 }

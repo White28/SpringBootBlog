@@ -44,7 +44,6 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
  *       Class that contains tests for UserController;
  * 
  */
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration

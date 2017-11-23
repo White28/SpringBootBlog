@@ -50,13 +50,12 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
  *       Class that contains tests for CommentController;
  * 
  */
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
 public class CommentControllerTest {
 	private static final String URL_POST = "/post/";
-	private static final Date dateOfCommentPublishing = new Date();
+	private static final Date dateOfCommentPublishing = new Date();;
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
@@ -128,8 +127,8 @@ public class CommentControllerTest {
 	}
 
 	/**
-	 * That test finds a comment by its id if the one exists it is deleted, then
-	 * it checks if the comment is existed in db, supposed to be null;
+	 * That test finds a comment by its id if the one exists it is deleted, then it
+	 * checks if the comment is existed in db, supposed to be null;
 	 * 
 	 * @throws Exception
 	 */
@@ -143,11 +142,11 @@ public class CommentControllerTest {
 	}
 
 	/**
-	 * That test creates a new object of comment model, then converts it into
-	 * json format. After it insert the comment into db through create method of
-	 * CommentController. Then it changes on of the fields and call method
-	 * update of the same controller. Last thing it checks if the field was
-	 * updated in database;
+	 * That test creates a new object of comment model, then converts it into json
+	 * format. After it insert the comment into db through create method of
+	 * CommentController. Then it changes on of the fields and call method update of
+	 * the same controller. Last thing it checks if the field was updated in
+	 * database;
 	 *
 	 * @throws Exception
 	 */
@@ -170,10 +169,10 @@ public class CommentControllerTest {
 	}
 
 	/**
-	 * In this test was created a collection of user's ids who liked comment,
-	 * then it saves that collection into Comment model "comment" and saves
-	 * "comment" into db. Then it gets back all users who liked the comment, and
-	 * checks the fields of users;
+	 * In this test was created a collection of user's ids who liked comment, then
+	 * it saves that collection into Comment model "comment" and saves "comment"
+	 * into db. Then it gets back all users who liked the comment, and checks the
+	 * fields of users;
 	 * 
 	 * @throws Exception
 	 */
@@ -198,8 +197,7 @@ public class CommentControllerTest {
 	/**
 	 * 
 	 * @param o
-	 *            - is an instance of class that should be converted to json
-	 *            format;
+	 *            - is an instance of class that should be converted to json format;
 	 * @return the String that looks like json of current object;
 	 * @throws IOException
 	 */
