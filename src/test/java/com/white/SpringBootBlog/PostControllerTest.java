@@ -37,8 +37,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.white.SpringBootBlog.Models.Comment;
 import com.white.SpringBootBlog.Models.Post;
 import com.white.SpringBootBlog.Models.User;
+import com.white.SpringBootBlog.Repositories.ICommentRepository;
 import com.white.SpringBootBlog.Repositories.IPostRepository;
 import com.white.SpringBootBlog.Repositories.IUserRepository;
 
@@ -56,6 +58,7 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
 public class PostControllerTest {
 
 	private static final String URL_POST = "/post";
+	private static final Date dateOfCommentPublishing = new Date();
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
@@ -70,6 +73,8 @@ public class PostControllerTest {
 
 	private List<Post> postList;
 
+	private List<Comment> listOfComments;
+
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -78,6 +83,9 @@ public class PostControllerTest {
 
 	@Autowired
 	private IUserRepository userRepository;
+
+	@Autowired
+	private ICommentRepository commentRepository;
 
 	@Autowired
 	void setConverters(HttpMessageConverter<?>[] converters) {
@@ -151,8 +159,8 @@ public class PostControllerTest {
 	/**
 	 * That test creates a new object of post model, then converts it into json
 	 * format. After it insert the post into db through create method of
-	 * PostController. Then it changes on of the fields and call method update of
-	 * the same controller. Last thing it checks if the field was updated in
+	 * PostController. Then it changes on of the fields and call method update
+	 * of the same controller. Last thing it checks if the field was updated in
 	 * database;
 	 *
 	 * @throws Exception
@@ -172,9 +180,10 @@ public class PostControllerTest {
 	}
 
 	/**
-	 * In this test was created a collection of user's ids who liked post, then it
-	 * saves that collection into Post model "post" and saves "post" into db. Then
-	 * it gets back all users who liked the comment, and checks the fields of users;
+	 * In this test was created a collection of user's ids who liked post, then
+	 * it saves that collection into Post model "post" and saves "post" into db.
+	 * Then it gets back all users who liked the comment, and checks the fields
+	 * of users;
 	 * 
 	 * @throws Exception
 	 */
@@ -201,9 +210,45 @@ public class PostControllerTest {
 	}
 
 	/**
+	 * In this test was created a collection of user's ids who liked post, then
+	 * it saves that collection into Post model "post" and saves "post" into db.
+	 * Then it gets back all users who liked the comment, and checks the fields
+	 * of users;
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetAllCommentsUnderPostSuccess() throws Exception {
+
+		User user1 = userRepository.save(new User("alex", "tor"));
+		User user2 = userRepository.save(new User("dima", "white"));
+
+		listOfComments = new ArrayList<>();
+
+		listOfComments.add(
+				commentRepository.save(new Comment(user1.getId(), "The body for comment11111", dateOfCommentPublishing)));
+		listOfComments.add(
+				commentRepository.save(new Comment(user2.getId(), "The body for comment22222", dateOfCommentPublishing)));
+
+		List<ObjectId> listOfCommentsUnderPost = new ArrayList<>();
+		listOfCommentsUnderPost.add(listOfComments.get(0).getId());
+		listOfCommentsUnderPost.add(listOfComments.get(1).getId());
+
+		this.post = new Post("someTitle", "someBody", new Date(), user.getId());
+		this.post.setListOfComments(listOfCommentsUnderPost);
+		postRepository.save(this.post);
+
+		mockMvc.perform(get("/post/" + this.post.getId() + "/comments")).andExpect(status().isOk())
+				.andExpect(content().contentType(contentType))
+				.andExpect(jsonPath("$[0].commentText", is(listOfComments.get(0).getCommentText())))
+				.andExpect(jsonPath("$[1].commentText", is(listOfComments.get(1).getCommentText())));
+	}
+
+	/**
 	 * 
 	 * @param o
-	 *            - is an instance of class that should be converted to json format;
+	 *            - is an instance of class that should be converted to json
+	 *            format;
 	 * @return the String that looks like json of current object;
 	 * @throws IOException
 	 */

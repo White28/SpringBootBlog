@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.white.SpringBootBlog.Models.Comment;
 import com.white.SpringBootBlog.Models.Post;
 import com.white.SpringBootBlog.Models.User;
+import com.white.SpringBootBlog.Repositories.ICommentRepository;
 import com.white.SpringBootBlog.Repositories.IPostRepository;
 import com.white.SpringBootBlog.Repositories.IUserRepository;
 
@@ -32,6 +34,9 @@ public class PostController {
 
 	@Autowired
 	private IUserRepository userRepository;
+
+	@Autowired
+	private ICommentRepository commentRepository;
 
 	private final String DEFAULT_PAGE = "0";
 	private final String DEFAULT_SIZE = "5";
@@ -102,5 +107,16 @@ public class PostController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
 	public Set<User> getAllUsersWhoLikedPost(@PathVariable(value = "id") ObjectId id) {
 		return userRepository.getAllUsers(postRepository.findOne(id).getSetOfLikes());
+	}
+
+	/**
+	 * 
+	 * @param id
+	 *            - the id of post;
+	 * @return return Collection of comments which were left under the post
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/comments")
+	public List<Comment> getAllCommentsUnderPost(@PathVariable(value = "id") ObjectId id) {
+		return commentRepository.getAllComments(postRepository.findOne(id).getListOfComments());
 	}
 }
