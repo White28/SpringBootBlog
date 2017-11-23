@@ -108,4 +108,12 @@ public class Post {
 	public void setListOfComments(List<ObjectId> listOfComments) {
 		this.listOfComments = listOfComments;
 	}
+
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", title=" + title + ", body=" + body + ", dateOfPublishing=" + dateOfPublishing
+				+ ", userId=" + userId + ", setOfLikes=" + setOfLikes + ", tags=" + tags + ", listOfComments="
+				+ listOfComments + "]";
+	}
+	
 }

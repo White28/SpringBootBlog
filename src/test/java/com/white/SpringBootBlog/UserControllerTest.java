@@ -41,7 +41,7 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
  * @author Alexander Torchynskyi, Dmytro Bilyi
  * @data Nov 22, 2017
  *       <p>
- *       Restful API for the controller with simple CRUD methods;
+ *       Class that contains tests for UserController;
  * 
  */
 
@@ -88,23 +88,43 @@ public class UserControllerTest {
 		this.userList.add(userRepository.save(new User("FirstName2", "LastName2")));
 	}
 
+	/**
+	 * Finds user by its id and checks the body of user if it's the same;
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void readSingleUserSuccess() throws Exception {
+	public void testReadSingleUserSuccess() throws Exception {
 		mockMvc.perform(get("/user/" + this.userList.get(0).getId())).andExpect(status().isOk())
 				.andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$.firstName", is(this.userList.get(0).getFirstName())))
 				.andExpect(jsonPath("$.lastName", is(this.userList.get(0).getLastName())));
 	}
 
+	/**
+	 * That test finds a user by its id if the one exists it is deleted, then it
+	 * checks if the user is existed in db, supposed to be null;
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void deleteUserSuccess() throws Exception {
+	public void testDeleteUserSuccess() throws Exception {
 		mockMvc.perform(get("/user/" + this.userList.get(0).getId())).andExpect(status().isOk());
 		mockMvc.perform(delete("/user/" + this.userList.get(0).getId())).andExpect(status().isOk());
 		assertEquals(userRepository.findOne(userList.get(0).getId()), null);
 	}
 
+	/**
+	 * That test creates a new object of user model, then converts it into json
+	 * format. After it insert the user into db through create method of
+	 * UserController. Then it changes on of the fields and call method update of
+	 * the same controller. Last thing it checks if the field was updated in
+	 * database;
+	 *
+	 * @throws Exception
+	 */
 	@Test
-	public void CreateAndUpdateUserSuccess() throws Exception {
+	public void testCreateAndUpdateUserSuccess() throws Exception {
 		this.user = new User("FirstName123", "LastName123");
 		user.setId(new ObjectId());
 		String postJson = json(user);
@@ -117,6 +137,13 @@ public class UserControllerTest {
 		assertEquals(user.getFirstName(), userRepository.findOne(user.getId()).getFirstName());
 	}
 
+	/**
+	 * 
+	 * @param o
+	 *            - is an instance of class that should be converted to json format;
+	 * @return the String that looks like json of current object;
+	 * @throws IOException
+	 */
 	protected String json(Object o) throws IOException {
 		MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);

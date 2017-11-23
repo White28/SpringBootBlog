@@ -46,7 +46,10 @@ import com.white.SpringBootBlog.Repositories.IUserRepository;
  * @author Alexander Torchynskyi, Dima Bilyi
  * @data Nov 22, 2017
  *       <p>
+ *       Class that contains tests for PostController;
+ * 
  */
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
@@ -101,8 +104,82 @@ public class PostControllerTest {
 
 	}
 
+	/**
+	 * Finds post by its id and checks the body of post if it's the same;
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void getAllUsersWhoLikedPostSuccess() throws Exception {
+	public void testReadSinglePostSuccess() throws Exception {
+
+		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk())
+				.andExpect(content().contentType(contentType))
+				.andExpect(jsonPath("$.title", is(this.postList.get(0).getTitle())))
+				.andExpect(jsonPath("$.body", is(this.postList.get(0).getBody())))
+				.andExpect(jsonPath("$.tags", is(this.postList.get(0).getTags())));
+	}
+
+	/**
+	 * Finds all posts and checks the body of posts if it's the same;
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testReadAllPostsSuccess() throws Exception {
+
+		mockMvc.perform(get(URL_POST)).andExpect(status().isOk()).andExpect(content().contentType(contentType))
+				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$[0].title", is(this.postList.get(0).getTitle())))
+				.andExpect(jsonPath("$[0].body", is(this.postList.get(0).getBody())))
+				.andExpect(jsonPath("$[1].title", is(this.postList.get(1).getTitle())))
+				.andExpect(jsonPath("$[1].body", is(this.postList.get(1).getBody())));
+	}
+
+	/**
+	 * That test finds a post by its id if the one exists it is deleted, then it
+	 * checks if the post is existed in db, supposed to be null;
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testDeletePostSuccess() throws Exception {
+		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
+		mockMvc.perform(delete(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
+		assertEquals(postRepository.findOne(postList.get(0).getId()), null);
+	}
+
+	/**
+	 * That test creates a new object of post model, then converts it into json
+	 * format. After it insert the post into db through create method of
+	 * PostController. Then it changes on of the fields and call method update of
+	 * the same controller. Last thing it checks if the field was updated in
+	 * database;
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testCreateAndUpdatePostSuccess() throws Exception {
+		this.post = new Post("MyTitlke", "someBody", new Date(), user.getId());
+		post.setId(new ObjectId());
+		String postJson = json(post);
+		this.mockMvc.perform(post(URL_POST).contentType(MediaType.APPLICATION_JSON).content(postJson))
+				.andExpect(status().isOk());
+		post.setBody("anyBody");
+
+		mockMvc.perform(put(URL_POST).contentType(MediaType.APPLICATION_JSON).content(json(post)))
+				.andExpect(status().isOk());
+		assertEquals(post.getBody(), postRepository.findOne(post.getId()).getBody());
+	}
+
+	/**
+	 * In this test was created a collection of user's ids who liked post, then it
+	 * saves that collection into Post model "post" and saves "post" into db. Then
+	 * it gets back all users who liked the comment, and checks the fields of users;
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetAllUsersWhoLikedPostSuccess() throws Exception {
 
 		User user1 = userRepository.save(new User("alex", "tor"));
 		User user2 = userRepository.save(new User("dima", "white"));
@@ -123,48 +200,13 @@ public class PostControllerTest {
 				.andExpect(jsonPath("$[1].lastName", is(user2.getLastName())));
 	}
 
-	@Test
-	public void readSinglePostSuccess() throws Exception {
-
-		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk())
-				.andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$.title", is(this.postList.get(0).getTitle())))
-				.andExpect(jsonPath("$.body", is(this.postList.get(0).getBody())))
-				.andExpect(jsonPath("$.tags", is(this.postList.get(0).getTags())));
-	}
-
-	@Test
-	public void readAllPostsSuccess() throws Exception {
-
-		mockMvc.perform(get(URL_POST)).andExpect(status().isOk()).andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].title", is(this.postList.get(0).getTitle())))
-				.andExpect(jsonPath("$[0].body", is(this.postList.get(0).getBody())))
-				.andExpect(jsonPath("$[1].title", is(this.postList.get(1).getTitle())))
-				.andExpect(jsonPath("$[1].body", is(this.postList.get(1).getBody())));
-	}
-
-	@Test
-	public void deletePostSuccess() throws Exception {
-		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
-		mockMvc.perform(delete(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
-		assertEquals(postRepository.findOne(postList.get(0).getId()), null);
-	}
-
-	@Test
-	public void CreateAndUpdatePostSuccess() throws Exception {
-		this.post = new Post("MyTitlke", "someBody", new Date(), user.getId());
-		post.setId(new ObjectId());
-		String postJson = json(post);
-		this.mockMvc.perform(post(URL_POST).contentType(MediaType.APPLICATION_JSON).content(postJson))
-				.andExpect(status().isOk());
-		post.setBody("anyBody");
-
-		mockMvc.perform(put(URL_POST).contentType(MediaType.APPLICATION_JSON).content(json(post)))
-				.andExpect(status().isOk());
-		assertEquals(post.getBody(), postRepository.findOne(post.getId()).getBody());
-	}
-
+	/**
+	 * 
+	 * @param o
+	 *            - is an instance of class that should be converted to json format;
+	 * @return the String that looks like json of current object;
+	 * @throws IOException
+	 */
 	protected String json(Object o) throws IOException {
 		MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);

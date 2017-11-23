@@ -36,8 +36,13 @@ public class PostController {
 	private final String DEFAULT_PAGE = "0";
 	private final String DEFAULT_SIZE = "5";
 
+	/**
+	 * 
+	 * @param post
+	 *            - the model that should be added to database;
+	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void save(@RequestBody Post post) {
+	public void create(@RequestBody Post post) {
 		postRepository.insert(post);
 	}
 
@@ -57,21 +62,43 @@ public class PostController {
 		return postRepository.findAll(page, size);
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            - the id of post that should be shown;
+	 * @return the entity of post form db;
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public Post getOne(@PathVariable(value = "id") ObjectId id) {
 		return postRepository.findOne(id);
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            - the id of post that should be deleted;
+	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public void delete(@PathVariable(value = "id") ObjectId id) {
 		postRepository.delete(id);
 	}
 
+	/**
+	 * 
+	 * @param post
+	 *            - post with fields that should be updated;
+	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	public void update(@RequestBody Post post) {
 		postRepository.save(post);
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            - the id of post;
+	 * @return return Collection of users that liked the post;
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
 	public Set<User> getAllUsersWhoLikedPost(@PathVariable(value = "id") ObjectId id) {
 		return userRepository.getAllUsers(postRepository.findOne(id).getSetOfLikes());

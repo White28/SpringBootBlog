@@ -25,21 +25,42 @@ public class UserController {
 	@Autowired
 	private IUserRepository userRepository;
 
+	/**
+	 * 
+	 * @param id
+	 *            - the id of user that should be shown;
+	 * @return the entity of user form db;
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public User getOne(@PathVariable(name = "id") ObjectId id) {
 		return userRepository.findOne(id);
 	}
 
+	/**
+	 * 
+	 * @param user
+	 *            - the model that should be added to database;
+	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void save(@RequestBody User user) {
+	public void create(@RequestBody User user) {
 		userRepository.insert(user);
 	}
 
+	/**
+	 * 
+	 * @param user
+	 *            - user with fields that should be updated;
+	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	public void update(@RequestBody User user) {
 		userRepository.save(user);
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            - the id of user that should be deleted;
+	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public void delete(@PathVariable ObjectId id) {
 		userRepository.delete(id);
