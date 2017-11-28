@@ -26,10 +26,7 @@ public interface ICommentRepository extends MongoRepository<Comment, ObjectId> {
 	 */
 	default List<Comment> getAllComments(List<ObjectId> listOfCommentId) {
 		List<Comment> listOfComments = new ArrayList<>();
-		for (ObjectId id : listOfCommentId) {
-
-			listOfComments.add(this.findOne(id));
-		}
+		listOfCommentId.forEach(id -> listOfComments.add(this.findOne(id)));
 		return listOfComments;
 	}
 }

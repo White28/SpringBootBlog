@@ -108,12 +108,11 @@ public class PostControllerTest {
 		this.user1 = userRepository.save(new User("alex", "tor"));
 		this.user2 = userRepository.save(new User("dima", "white"));
 
-		this.post = new Post("someTitle", "someBody", new Date(), user1.getId());
-		this.post.setId(new ObjectId());
-
 		this.postList.add(postRepository.save(new Post("someTitle", "someBody", new Date(), user1.getId())));
 		this.postList.add(postRepository.save(new Post("NewTitle", "NewBody", new Date(), user1.getId())));
 
+		this.post = new Post("someTitle", "someBody", new Date(), user1.getId());
+		post.setId(new ObjectId());
 	}
 
 	/**
@@ -124,10 +123,10 @@ public class PostControllerTest {
 	@Test
 	public void testReadSinglePostSuccess() throws Exception {
 
-		mockMvc.perform(get(URL_POST + "/" + this.post.getId())).andExpect(status().isOk())
+		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk())
 				.andExpect(content().contentType(contentType)).andExpect(jsonPath("$.title", is(this.post.getTitle())))
-				.andExpect(jsonPath("$.body", is(this.post.getBody())))
-				.andExpect(jsonPath("$.tags", is(this.post.getTags())));
+				.andExpect(jsonPath("$.body", is(this.postList.get(0).getBody())))
+				.andExpect(jsonPath("$.tags", is(this.postList.get(0).getTags())));
 	}
 
 	/**
@@ -154,9 +153,9 @@ public class PostControllerTest {
 	 */
 	@Test
 	public void testDeletePostSuccess() throws Exception {
-		mockMvc.perform(get(URL_POST + "/" + this.post.getId())).andExpect(status().isOk());
-		mockMvc.perform(delete(URL_POST + "/" + this.post.getId())).andExpect(status().isOk());
-		assertEquals(postRepository.findOne(post.getId()), null);
+		mockMvc.perform(get(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
+		mockMvc.perform(delete(URL_POST + "/" + this.postList.get(0).getId())).andExpect(status().isOk());
+		assertEquals(postRepository.findOne(postList.get(0).getId()), null);
 	}
 
 	/**

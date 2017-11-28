@@ -28,10 +28,7 @@ public interface IUserRepository extends MongoRepository<User, ObjectId> {
 	 */
 	default Set<User> getAllUsers(Set<ObjectId> setOfUserId) {
 		Set<User> setOfUsers = new LinkedHashSet<>();
-
-		for (ObjectId id : setOfUserId) {
-			setOfUsers.add(this.findOne(id));
-		}
+		setOfUserId.forEach(id -> setOfUsers.add(this.findOne(id)));
 		return setOfUsers;
 	}
 }
