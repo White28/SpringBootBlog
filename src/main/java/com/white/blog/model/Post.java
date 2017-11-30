@@ -9,20 +9,23 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * @author Alexander Torchynskyi
+ * Class that represent collection of posts;
+ * <p>
+ * 
+ * @author Alexander Torchynskyi, Dmytro Bilyi
  * @data Nov 22, 2017
- *       <p>
- *       Class that represent collection of posts;
+ * 
  */
 @Document(collection = "post")
 public class Post {
 
 	@Id
 	private ObjectId id;
+	private ObjectId userId;
 	private String title;
 	private String body;
-	private Date dateOfPublishing;
-	private ObjectId userId;
+	private Date creationDate;
+
 	private Set<ObjectId> setOfLikes;
 	private List<String> tags;
 	private List<ObjectId> listOfComments;
@@ -30,18 +33,16 @@ public class Post {
 	public Post() {
 	}
 
-	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId) {
+	public Post(String title, String body, Date creationDate, ObjectId authorId) {
+		this();
 		this.title = title;
 		this.body = body;
-		this.dateOfPublishing = dateOfPublishing;
+		this.creationDate = creationDate;
 		this.userId = authorId;
 	}
 
-	public Post(String title, String body, Date dateOfPublishing, ObjectId authorId, List<String> tags) {
-		this.title = title;
-		this.body = body;
-		this.dateOfPublishing = dateOfPublishing;
-		this.userId = authorId;
+	public Post(String title, String body, Date creationDate, ObjectId authorId, List<String> tags) {
+		this(title, body, creationDate, authorId);
 		this.tags = tags;
 	}
 
@@ -69,12 +70,12 @@ public class Post {
 		this.body = body;
 	}
 
-	public Date getDateOfPublishing() {
-		return dateOfPublishing;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 
-	public void setDateOfPublishing(Date dateOfPublishing) {
-		this.dateOfPublishing = dateOfPublishing;
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	public ObjectId getAuthorId() {
@@ -107,12 +108,5 @@ public class Post {
 
 	public void setListOfComments(List<ObjectId> listOfComments) {
 		this.listOfComments = listOfComments;
-	}
-
-	@Override
-	public String toString() {
-		return "Post [id=" + id + ", title=" + title + ", body=" + body + ", dateOfPublishing=" + dateOfPublishing
-				+ ", userId=" + userId + ", setOfLikes=" + setOfLikes + ", tags=" + tags + ", listOfComments="
-				+ listOfComments + "]";
 	}
 }

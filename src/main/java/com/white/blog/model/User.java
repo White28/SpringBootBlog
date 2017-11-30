@@ -5,11 +5,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * @author Alexander Torchynskyi
+ * Class that represent collection of users, each post and comment have an
+ * author (user model);
+ * <p>
+ * 
+ * @author Alexander Torchynskyi, Dmytro Bilyi
  * @data Nov 22, 2017
- *       <p>
- *       Class that represent collection of users, each post and comment have an
- *       author (user model);
+ * 
  */
 @Document(collection = "user")
 public class User {
@@ -23,6 +25,7 @@ public class User {
 	}
 
 	public User(String firstName, String lastName) {
+		this();
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}

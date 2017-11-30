@@ -12,10 +12,11 @@ import com.white.blog.model.User;
 import com.white.blog.repository.IUserRepository;
 
 /**
+ * Restful API for the controller with simple CRUD methods;
+ * <p>
+ * 
  * @author Alexander Torchynskyi, Dmytro Bilyi
  * @data Nov 22, 2017
- *       <p>
- *       Restful API for the controller with simple CRUD methods;
  * 
  */
 @RestController
@@ -26,20 +27,22 @@ public class UserController {
 	private IUserRepository userRepository;
 
 	/**
+	 * Find the user by id
 	 * 
 	 * @param id
-	 *            - the id of user that should be shown;
+	 *            the id of user that should be shown;
 	 * @return the entity of user form db;
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
-	public User getOne(@PathVariable(name = "id") ObjectId id) {
+	public User getById(@PathVariable(name = "id") ObjectId id) {
 		return userRepository.findOne(id);
 	}
 
 	/**
+	 * Insert a user into database
 	 * 
 	 * @param user
-	 *            - the model that should be added to database;
+	 *            the model that should be added to database;
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public void create(@RequestBody User user) {
@@ -47,9 +50,10 @@ public class UserController {
 	}
 
 	/**
+	 * Update the user in database
 	 * 
 	 * @param user
-	 *            - user with fields that should be updated;
+	 *            user with fields that should be updated;
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	public void update(@RequestBody User user) {
@@ -57,9 +61,10 @@ public class UserController {
 	}
 
 	/**
+	 * Delete the user by id
 	 * 
 	 * @param id
-	 *            - the id of user that should be deleted;
+	 *            the id of user that should be deleted;
 	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public void delete(@PathVariable ObjectId id) {

@@ -8,11 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * @author Alexander Torchynskyi
+ * Class that represent collection comment, each post might have list of them;
+ * <p>
+ * 
+ * @author Alexander Torchynskyi, Dmytro Bilyi
  * @data Nov 22, 2017
- *       <p>
- *       Class that represent collection comment, each post might have list of
- *       them;
+ * 
  */
 @Document(collection = "comment")
 public class Comment {
@@ -20,7 +21,7 @@ public class Comment {
 	@Id
 	private ObjectId id;
 	private ObjectId userId;
-	private String commentText;
+	private String body;
 	private Date dateOfPublishing;
 	private Set<ObjectId> setOfLikes;
 
@@ -28,8 +29,9 @@ public class Comment {
 	}
 
 	public Comment(ObjectId userId, String commentText, Date dateOfPublishing) {
+		this();
 		this.userId = userId;
-		this.commentText = commentText;
+		this.body = commentText;
 		this.dateOfPublishing = dateOfPublishing;
 	}
 
@@ -49,12 +51,12 @@ public class Comment {
 		this.userId = userId;
 	}
 
-	public String getCommentText() {
-		return commentText;
+	public String getBody() {
+		return body;
 	}
 
-	public void setCommentText(String commentText) {
-		this.commentText = commentText;
+	public void setBody(String body) {
+		this.body = body;
 	}
 
 	public Date getDateOfPublishing() {

@@ -20,15 +20,20 @@ import com.white.blog.repository.IPostRepository;
 import com.white.blog.repository.IUserRepository;
 
 /**
+ * Restful API for the controller with simple CRUD methods;
+ * <p>
+ * 
  * @author Alexander Torchynskyi, Dmytro Bilyi
  * @data Nov 22, 2017
- *       <p>
- *       Restful API for the controller with simple CRUD methods;
  * 
  */
 @RestController
 @RequestMapping(value = "/post")
 public class PostController {
+
+	private static final String DEFAULT_PAGE = "0";
+	private static final String DEFAULT_SIZE = "5";
+
 	@Autowired
 	private IPostRepository postRepository;
 
@@ -38,13 +43,11 @@ public class PostController {
 	@Autowired
 	private ICommentRepository commentRepository;
 
-	private final String DEFAULT_PAGE = "0";
-	private final String DEFAULT_SIZE = "5";
-
 	/**
+	 * Insert a post into database
 	 * 
 	 * @param post
-	 *            - the model that should be added to database;
+	 *            the model that should be added to database;
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public void create(@RequestBody Post post) {
@@ -52,6 +55,7 @@ public class PostController {
 	}
 
 	/**
+	 * Find all posts on some page
 	 * 
 	 * @param page
 	 *            is number of page;
@@ -59,7 +63,7 @@ public class PostController {
 	 * @param size
 	 *            is amount of elements displayed per page;
 	 * 
-	 * @return List<Post> a paged list of posts ;
+	 * @return List<Post> a paged list of posts;
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Post> getAll(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE) int page,
@@ -68,20 +72,22 @@ public class PostController {
 	}
 
 	/**
+	 * Find the post by id
 	 * 
 	 * @param id
-	 *            - the id of post that should be shown;
+	 *            the id of post that should be shown;
 	 * @return the entity of post form db;
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
-	public Post getOne(@PathVariable(value = "id") ObjectId id) {
+	public Post getById(@PathVariable(value = "id") ObjectId id) {
 		return postRepository.findOne(id);
 	}
 
 	/**
+	 * Delete the post by id
 	 * 
 	 * @param id
-	 *            - the id of post that should be deleted;
+	 *            the id of post that should be deleted;
 	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public void delete(@PathVariable(value = "id") ObjectId id) {
@@ -89,9 +95,10 @@ public class PostController {
 	}
 
 	/**
+	 * Update the post in database
 	 * 
 	 * @param post
-	 *            - post with fields that should be updated;
+	 *            with fields that should be updated;
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	public void update(@RequestBody Post post) {
@@ -99,24 +106,26 @@ public class PostController {
 	}
 
 	/**
+	 * Find users who liked or disliked the post
 	 * 
 	 * @param id
-	 *            - the id of post;
-	 * @return return Collection of users that liked the post;
+	 *            the id of post;
+	 * @return return Collection of users that liked or disliked the post;
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
-	public Set<User> getAllUsersWhoLikedPost(@PathVariable(value = "id") ObjectId id) {
+	public Set<User> getUsersByActivity(@PathVariable(value = "id") ObjectId id) {
 		return userRepository.getAllUsers(postRepository.findOne(id).getSetOfLikes());
 	}
 
 	/**
+	 * Find comments which were left under the post
 	 * 
 	 * @param id
-	 *            - the id of post;
+	 *            the id of post;
 	 * @return return Collection of comments which were left under the post
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/comments")
-	public List<Comment> getAllCommentsUnderPost(@PathVariable(value = "id") ObjectId id) {
+	public List<Comment> getComments(@PathVariable(value = "id") ObjectId id) {
 		return commentRepository.getAllComments(postRepository.findOne(id).getListOfComments());
 	}
 }
