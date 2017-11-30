@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.white.blog.model.Comment;
 import com.white.blog.model.User;
 import com.white.blog.repository.ICommentRepository;
-import com.white.blog.repository.IUserRepository;
+import com.white.blog.service.MainService;
 
 /**
  * Restful API for the controller with simple CRUD methods;
@@ -31,7 +31,7 @@ public class CommentController {
 	private ICommentRepository commentRepository;
 
 	@Autowired
-	private IUserRepository userRepository;
+	private MainService service;
 
 	/**
 	 * Find the comment by id
@@ -86,7 +86,7 @@ public class CommentController {
 	 * @return Collection of users that liked or disliked the comment;
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
-	public Set<User> getUsersByActivity(@PathVariable(value = "id") ObjectId id) {
-		return userRepository.getAllUsers(commentRepository.findOne(id).getSetOfLikes());
+	public Set<User> getUsersWhoLikedComment(@PathVariable(value = "id") ObjectId id) {
+		return service.getUsers(commentRepository.findOne(id).getSetOfLikes());
 	}
 }

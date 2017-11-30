@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.white.blog.model.Comment;
 import com.white.blog.model.Post;
 import com.white.blog.model.User;
-import com.white.blog.repository.ICommentRepository;
 import com.white.blog.repository.IPostRepository;
-import com.white.blog.repository.IUserRepository;
+import com.white.blog.service.MainService;
 
 /**
  * Restful API for the controller with simple CRUD methods;
@@ -35,13 +34,10 @@ public class PostController {
 	private static final String DEFAULT_SIZE = "5";
 
 	@Autowired
+	private MainService service;
+
+	@Autowired
 	private IPostRepository postRepository;
-
-	@Autowired
-	private IUserRepository userRepository;
-
-	@Autowired
-	private ICommentRepository commentRepository;
 
 	/**
 	 * Insert a post into database
@@ -68,7 +64,7 @@ public class PostController {
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Post> getAll(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE) int page,
 			@RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int size) {
-		return postRepository.findAll(page, size);
+		return service.findAll(page, size);
 	}
 
 	/**
@@ -113,8 +109,8 @@ public class PostController {
 	 * @return return Collection of users that liked or disliked the post;
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
-	public Set<User> getUsersByActivity(@PathVariable(value = "id") ObjectId id) {
-		return userRepository.getAllUsers(postRepository.findOne(id).getSetOfLikes());
+	public Set<User> getUsersWhoLikedPost(@PathVariable(value = "id") ObjectId id) {
+		return service.getUsers(postRepository.findOne(id).getSetOfLikes());
 	}
 
 	/**
@@ -126,6 +122,6 @@ public class PostController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/comments")
 	public List<Comment> getComments(@PathVariable(value = "id") ObjectId id) {
-		return commentRepository.getAllComments(postRepository.findOne(id).getListOfComments());
+		return service.getComments(postRepository.findOne(id).getListOfComments());
 	}
 }
