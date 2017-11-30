@@ -21,6 +21,7 @@ import com.white.blog.model.User;
 public interface IUserRepository extends MongoRepository<User, ObjectId> {
 
 	/**
+	 * Method get all users with pagination
 	 * 
 	 * @param setOfUserId
 	 *            - it takes a collection of users id who liked post or comment;
