@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.white.blog.model.Comment;
@@ -26,6 +27,9 @@ import com.white.blog.service.MainService;
 @RestController
 @RequestMapping(value = "/post/{id}/comment")
 public class CommentController {
+
+	private static final String DEFAULT_PAGE = "0";
+	private static final String DEFAULT_SIZE = "5";
 
 	@Autowired
 	private ICommentRepository commentRepository;
@@ -86,7 +90,9 @@ public class CommentController {
 	 * @return Collection of users that liked or disliked the comment;
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
-	public Set<User> getUsersWhoLikedComment(@PathVariable(value = "id") ObjectId id) {
-		return service.getUsers(commentRepository.findOne(id).getSetOfLikes());
+	public Set<User> getUsersByActivity(@PathVariable(value = "id") ObjectId id,
+			@RequestParam(value = "page", defaultValue = DEFAULT_PAGE) int page,
+			@RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int size) {
+		return service.getUsers(commentRepository.findOne(id).getSetOfLikes(), page, size);
 	}
 }

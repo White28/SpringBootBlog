@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import com.white.blog.repository.IPostRepository;
 import com.white.blog.repository.IUserRepository;
 
 /**
- * @author Alexander Torchynskyi
+ * @author Alexander Torchynskyi, Dmytro Bilyi 
  * @data Nov 30, 2017
  *       <p>
  */
@@ -35,38 +36,40 @@ public class MainService {
 	private IPostRepository postRepository;
 
 	/**
+	 * Method get comments which are located on the current page
 	 * 
 	 * @param listOfCommentId
-	 *            - it takes a collection of comments which were left under the
+	 *            it takes a collection of comments which were left under the
 	 *            post;
-	 * @return - it gets back a collection of comments which were left under the
+	 * @return it gets back a collection of comments which were left under the
 	 *         post;
 	 */
-	public List<Comment> getComments(List<ObjectId> listOfCommentId) {
+	public List<Comment> getComments(List<ObjectId> listOfCommentId, int page, int size) {
 		List<Comment> listOfComments = new ArrayList<>();
 		listOfCommentId.forEach(id -> listOfComments.add(commentRepository.findOne(id)));
-		return listOfComments;
+		return listOfComments.stream().skip(page * size).limit(size).collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**
-	 * Method get all users with pagination
+	 * Method get users which are located on the current page
 	 * 
 	 * @param setOfUserId
-	 *            - it takes a collection of users id who liked post or comment;
+	 *            it takes a collection of users id who liked post or comment;
 	 * @return it gets back a collection of user who liked post or comment;
 	 */
-	public Set<User> getUsers(Set<ObjectId> setOfUserId) {
+	public Set<User> getUsers(Set<ObjectId> setOfUserId, int page, int size) {
 		Set<User> setOfUsers = new LinkedHashSet<>();
 		setOfUserId.forEach(id -> setOfUsers.add(userRepository.findOne(id)));
-		return setOfUsers;
+		return setOfUsers.stream().skip(page * size).limit(size).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/**
+	 * Method get posts which are located on the current page
 	 * 
 	 * @param page
-	 *            - the number of page;
+	 *            the number of page;
 	 * @param size
-	 *            - the amount of items that will be shown;
+	 *            the amount of items that will be shown;
 	 * @return a paged and sized collection of items;
 	 */
 	public List<Post> findAll(int page, int size) {

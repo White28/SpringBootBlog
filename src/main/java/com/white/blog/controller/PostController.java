@@ -109,8 +109,10 @@ public class PostController {
 	 * @return return Collection of users that liked or disliked the post;
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/likes")
-	public Set<User> getUsersWhoLikedPost(@PathVariable(value = "id") ObjectId id) {
-		return service.getUsers(postRepository.findOne(id).getSetOfLikes());
+	public Set<User> getUsersWhoLikedPost(@PathVariable(value = "id") ObjectId id,
+			@RequestParam(value = "page", defaultValue = DEFAULT_PAGE) int page,
+			@RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int size) {
+		return service.getUsers(postRepository.findOne(id).getSetOfLikes(), page, size);
 	}
 
 	/**
@@ -121,7 +123,9 @@ public class PostController {
 	 * @return return Collection of comments which were left under the post
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/comments")
-	public List<Comment> getComments(@PathVariable(value = "id") ObjectId id) {
-		return service.getComments(postRepository.findOne(id).getListOfComments());
+	public List<Comment> getComments(@PathVariable(value = "id") ObjectId id,
+			@RequestParam(value = "page", defaultValue = DEFAULT_PAGE) int page,
+			@RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int size) {
+		return service.getComments(postRepository.findOne(id).getListOfComments(), page, size);
 	}
 }
