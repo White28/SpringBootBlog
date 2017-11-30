@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Controllers;
+package com.white.blog.controller;
 
 import java.util.Set;
 
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.white.SpringBootBlog.Models.Comment;
-import com.white.SpringBootBlog.Models.User;
-import com.white.SpringBootBlog.Repositories.ICommentRepository;
-import com.white.SpringBootBlog.Repositories.IUserRepository;
+import com.white.blog.model.Comment;
+import com.white.blog.model.User;
+import com.white.blog.repository.ICommentRepository;
+import com.white.blog.repository.IUserRepository;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi
@@ -39,7 +39,6 @@ public class CommentController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public Comment getOne(@PathVariable(name = "id") ObjectId id) {
-		System.out.println(id);
 		return commentRepository.findOne(id);
 	}
 

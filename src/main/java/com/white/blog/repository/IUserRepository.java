@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Repositories;
+package com.white.blog.repository;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.white.SpringBootBlog.Models.User;
+import com.white.blog.model.User;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi

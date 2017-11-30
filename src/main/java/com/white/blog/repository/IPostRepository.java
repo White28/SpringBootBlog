@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Repositories;
+package com.white.blog.repository;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.white.SpringBootBlog.Models.Post;
+import com.white.blog.model.Post;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi

@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Controllers;
+package com.white.blog.controller;
 
 import java.util.List;
 import java.util.Set;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.white.SpringBootBlog.Models.Comment;
-import com.white.SpringBootBlog.Models.Post;
-import com.white.SpringBootBlog.Models.User;
-import com.white.SpringBootBlog.Repositories.ICommentRepository;
-import com.white.SpringBootBlog.Repositories.IPostRepository;
-import com.white.SpringBootBlog.Repositories.IUserRepository;
+import com.white.blog.model.Comment;
+import com.white.blog.model.Post;
+import com.white.blog.model.User;
+import com.white.blog.repository.ICommentRepository;
+import com.white.blog.repository.IPostRepository;
+import com.white.blog.repository.IUserRepository;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi

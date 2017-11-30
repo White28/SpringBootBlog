@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Controllers;
+package com.white.blog.controller;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.white.SpringBootBlog.Models.User;
-import com.white.SpringBootBlog.Repositories.IUserRepository;
+import com.white.blog.model.User;
+import com.white.blog.repository.IUserRepository;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi

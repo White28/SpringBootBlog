@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Models;
+package com.white.blog.model;
 
 import java.util.Date;
 import java.util.List;

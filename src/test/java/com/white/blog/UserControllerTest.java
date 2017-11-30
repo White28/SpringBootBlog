@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog;
+package com.white.blog;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -33,8 +33,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.white.SpringBootBlog.Models.User;
-import com.white.SpringBootBlog.Repositories.IUserRepository;
+import com.white.blog.model.User;
+import com.white.blog.repository.IUserRepository;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi

@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Models;
+package com.white.blog.model;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

@@ -1,4 +1,4 @@
-package com.white.SpringBootBlog.Repositories;
+package com.white.blog.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.white.SpringBootBlog.Models.Comment;
+import com.white.blog.model.Comment;
 
 /**
  * @author Alexander Torchynskyi, Dmytro Bilyi
